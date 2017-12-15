@@ -1,6 +1,6 @@
 package edu.sc.csce.bill.model;
 
-//import java.math.double;
+import java.math.BigDecimal;
 
 public class Transaction 
 {
@@ -16,8 +16,8 @@ public class Transaction
 //	} // by Monna
 	private Type type;
 	private Date transactionDate;
-	private double amount; //by Monna--1214hao
-	//private double amount;
+//	private double amount; //by Monna
+	private BigDecimal amount;
 	private String note;
 	
 	public Transaction(Type charge, Date date2, double d, String string) {
@@ -48,11 +48,11 @@ public class Transaction
 //		this.amount = amount;
 //	} // Monna
 	
-	public double getAmount()
+	public BigDecimal getAmount()
 	{
 		return amount;
 	}
-	public void setAmount(double amount)
+	public void setAmount(BigDecimal amount)
 	{
 		this.amount = amount;
 	}

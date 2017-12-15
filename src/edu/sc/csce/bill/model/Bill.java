@@ -11,8 +11,8 @@ public class Bill
 	private College college;
 	private ClassStatus classStatus;
 	private double balance;
-	//private static List<Transaction> transaction;
-	private List<Transaction> transaction;
+	private static List<Transaction> transaction;
+	//private List<Transaction> transaction;
 	//getter and setter
 	public Student getStudent()
 	{
@@ -50,9 +50,9 @@ public class Bill
 //	{
 //		return transaction;
 //	}
-	public List<Transaction> getTransaction()
+	public static List<Transaction> getTransaction()
 	{
-		return this.transaction;
+		return transaction;
 	}
 	public void setTransaction(List<Transaction> transaction)
 	{
@@ -70,8 +70,4 @@ public class Bill
 		this.transaction = transaction;
 	}
 	
-	public Bill()
-	{
-		super();
-	}
 }
