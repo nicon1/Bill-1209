@@ -8,7 +8,12 @@ import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.time.LocalDate;
+import java.util.GregorianCalendar;
+
 
 import com.google.gson.Gson;
 
@@ -31,6 +36,7 @@ import edu.sc.csce.bill.model.Semester;
 import edu.sc.csce.bill.model.Student;
 import edu.sc.csce.bill.model.StudentRecord;
 import edu.sc.csce.bill.model.Term;
+import edu.sc.csce.bill.model.Transaction;
 
 public class DataStore 
 {
@@ -329,6 +335,67 @@ public class DataStore
 			}
 		}
 	}
+	
+	//generatebill
+	public static Bill generateBill(String userId)
+	{
+		Bill retBill = new Bill();
+		
+		for(Bill bill : billHistory)
+		{
+			if(bill.getStudent().getId()==userId)
+			{
+				double totalTransac = 0;
+				for(Transaction transac :bill.getTransaction())
+				{
+					LocalDate dateNow = LocalDate.now();
+					int dayNow = dateNow.getDayOfMonth();
+					int monthNow = dateNow.getMonthValue();
+					int yearNow = dateNow.getYear();
+					int month = transac.getTransactionDate().getMonth();
+					int day = transac.getTransactionDate().getDay();
+					int year = transac.getTransactionDate().getYear();
+					Calendar currentDateBefore3Months = Calendar.getInstance();
+					currentDateBefore3Months.add(Calendar.MONTH, -3);
+					java.util.Date transacDate = new GregorianCalendar(year, month - 1, day).getTime();
+					java.util.Date endDate = new GregorianCalendar(yearNow, monthNow - 1, dayNow).getTime();
+					//java.util.Date startDate = new GregorianCalendar(yearNow, monthNow - 4, dayNow).getTime();
+					if (transacDate.after(currentDateBefore3Months.getTime()) && transacDate.before(endDate)) 
+					{
+						totalTransac = totalTransac + transac.getAmount();
+						
+						bill.setBalance(totalTransac);
+					}
+				}
+				for(StudentRecord record : studentRecords)
+				{
+					if(record.getStudent().getId()==userId)
+					{
+						double charge = Count.countFinalFee(record).doubleValue();
+						
+						retBill.setBalance(0);
+					}
+				}
+				return bill;
+			}
+		}
+		for(StudentRecord record : studentRecords)
+		{
+			if(record.getStudent().getId()==userId)
+			{
+				retBill.setStudent(record.getStudent());
+				retBill.setCollege(record.getCollege());
+				retBill.setClassStatus(record.getClassStatus());
+				retBill.setTransaction(null);
+				double charge = Count.countFinalFee(record).doubleValue();
+				retBill.setBalance(0);
+			}
+		}
+		billHistory.add(retBill);
+		return retBill;
+	}
+
+	
 	
 	public static void addBill(Bill bill)throws BillsNotSavedException
 	{
